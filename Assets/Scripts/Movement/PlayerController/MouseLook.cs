@@ -7,7 +7,7 @@ namespace Player.Camera.FirstPerson
     [AddComponentMenu("Player/Camera/FirstPerson")]
     public class MouseLook : MonoBehaviour
     {
-        #region Variable
+        #region Variables
         [Header("Sensitivity")]
         public float sensX = 15;
         public float sensY = 15;
@@ -17,13 +17,15 @@ namespace Player.Camera.FirstPerson
         float rotationY = 0;
         public RotationalAxis axis = RotationalAxis.MouseX;
         #endregion
-
+        #region RotationAxis
         public enum RotationalAxis
         {
             MouseXandY = 0,
             MouseX = 1,
             MouseY = 2
         }
+        #endregion
+        #region Start
         void Start()
         {
             if (this.GetComponent<Rigidbody>())
@@ -31,6 +33,8 @@ namespace Player.Camera.FirstPerson
                 this.GetComponent<Rigidbody>().freezeRotation = true; // stopping the object rolating
             }
         }
+        #endregion
+        #region Update
         void Update()
         {
             if (axis == RotationalAxis.MouseXandY)
@@ -52,6 +56,6 @@ namespace Player.Camera.FirstPerson
                 transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
             }
         }
-
+        #endregion
     }
 }
