@@ -5,54 +5,66 @@ using UnityEngine;
 [AddComponentMenu("Character Set UP/Interact")]
 public class Interact : MonoBehaviour
 {
-    public string labName;
+    #region Variables
+    public string labName;// label Name
 
     [Header("Player and Camera")]
     public GameObject player;
     public GameObject mainCam;
-
+    #endregion
+    #region Start
     // Use this for initialization
     void Start()
     {
+        #region Cursor
+        // Lock And not Visible
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        #endregion
         player = GameObject.FindGameObjectWithTag("Player");
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera");
-    }
 
+
+    }
+    #endregion
+    #region Update
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))// Key Command to active
         {
             Ray interact;
             interact = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
             RaycastHit hitInfo;
-            if(Physics.Raycast(interact,out hitInfo, 10))
+            if (Physics.Raycast(interact, out hitInfo, 10))
             {
-
+                #region NPC
                 if (hitInfo.collider.CompareTag("NPC"))
                 {
                     Debug.Log("Hit the NPC");
                     Dialogue dlg = hitInfo.transform.GetComponent<Dialogue>();
-                    ;
+                    //Patrol move = hitInfo.transform.GetComponent<Patrol>();
+                    //TotemDialogue tDlg = hitInfo.transform.GetComponent<TotemDialogue>();
+                    #region DLG
                     if (dlg != null)
                     {
                         dlg.showDlg = true;
+                        //tDlg.showDlg = false;
                         player.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
-                        player.GetComponent<PlayerCon>().enabled = false;
-                        mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
+                        player.GetComponent<FinalCharacter>().enabled = false;
+
                         Cursor.lockState = CursorLockMode.None;
                         Cursor.visible = true;
                     }
-                
-               }
+                    #endregion
+                }
             }
+
         }
+        #region InteractName
         Ray interactName;
         interactName = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, Screen.height / 2));
         RaycastHit hitIn;
-        if(Physics.Raycast(interactName, out hitIn, 10))
+        if (Physics.Raycast(interactName, out hitIn, 10))
         {
             #region NPCtag
             if (hitIn.collider.CompareTag("NPC"))
@@ -66,7 +78,11 @@ public class Interact : MonoBehaviour
             }
             #endregion
         }
+        #endregion
+        #endregion
     }
+    #endregion
+    #region OnGUI
     void OnGUI()
     {
         if (labName != "")
@@ -74,5 +90,5 @@ public class Interact : MonoBehaviour
             GUI.Box(new Rect(100, 100, 150, 50), labName);
         }
     }
-
+    #endregion
 }
