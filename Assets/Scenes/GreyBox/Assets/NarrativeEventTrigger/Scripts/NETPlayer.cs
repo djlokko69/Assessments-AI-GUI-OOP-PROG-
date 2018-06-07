@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class NET_Player : MonoBehaviour
+
+public class NETPlayer : MonoBehaviour
 {
 
     public Text eventTitle;
@@ -20,17 +21,17 @@ public class NET_Player : MonoBehaviour
 
     void OnTriggerEnter(Collider obj)
     {
-        if (obj.GetComponent<NET_EventTrigger>())
+        if (obj.GetComponent<NETEventTrigger>())
         {
             eventDisplayObject.SetActive(true);
-            eventTitle.text = obj.GetComponent<NET_EventTrigger>().eventTitle;
-            eventDescription.text = obj.GetComponent<NET_EventTrigger>().eventDescription;
+            eventTitle.text = obj.GetComponent<NETEventTrigger>().eventTitle;
+            eventDescription.text = obj.GetComponent<NETEventTrigger>().eventDescription;
         }
     }
 
     void OnTriggerExit(Collider obj)
     {
-        if (obj.GetComponent<NET_EventTrigger>())
+        if (obj.GetComponent<NETEventTrigger>())
         {
             eventDisplayObject.SetActive(false);
             eventTitle.text = "";
