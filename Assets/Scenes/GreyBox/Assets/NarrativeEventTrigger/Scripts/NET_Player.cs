@@ -2,19 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class NET_Player : MonoBehaviour {
+public class NET_Player : MonoBehaviour
+{
 
     public Text eventTitle;
     public Text eventDescription;
     public GameObject eventDisplayObject;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         eventDisplayObject.SetActive(false);
-		
-	}
-	
+
+    }
+
 
     void OnTriggerEnter(Collider obj)
     {
