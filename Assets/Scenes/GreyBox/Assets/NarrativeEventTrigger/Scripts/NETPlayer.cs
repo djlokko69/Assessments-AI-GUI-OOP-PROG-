@@ -2,33 +2,36 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-public class NET_Player : MonoBehaviour {
+
+public class NETPlayer : MonoBehaviour
+{
 
     public Text eventTitle;
     public Text eventDescription;
     public GameObject eventDisplayObject;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
 
         eventDisplayObject.SetActive(false);
-		
-	}
-	
+
+    }
+
 
     void OnTriggerEnter(Collider obj)
     {
-        if (obj.GetComponent<NET_EventTrigger>())
+        if (obj.GetComponent<NETEventTrigger>())
         {
             eventDisplayObject.SetActive(true);
-            eventTitle.text = obj.GetComponent<NET_EventTrigger>().eventTitle;
-            eventDescription.text = obj.GetComponent<NET_EventTrigger>().eventDescription;
+            eventTitle.text = obj.GetComponent<NETEventTrigger>().eventTitle;
+            eventDescription.text = obj.GetComponent<NETEventTrigger>().eventDescription;
         }
     }
 
     void OnTriggerExit(Collider obj)
     {
-        if (obj.GetComponent<NET_EventTrigger>())
+        if (obj.GetComponent<NETEventTrigger>())
         {
             eventDisplayObject.SetActive(false);
             eventTitle.text = "";
