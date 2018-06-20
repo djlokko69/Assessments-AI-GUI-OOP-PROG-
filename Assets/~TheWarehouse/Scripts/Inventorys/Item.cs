@@ -41,7 +41,7 @@ namespace TheWarehouse
         }
         public int Amount
         {
-            get { return _value; }
+            get { return _amount; }
             set { _amount = value; }
         }
         public string Description

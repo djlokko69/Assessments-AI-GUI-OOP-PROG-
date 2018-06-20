@@ -16,7 +16,9 @@ namespace TheWarehouse
 
         public Vector2 scrollPos = Vector2.zero;
         public string sortType;
-        public Handler charH;
+        //public Handler charH;
+        public GameObject player;
+        public GameObject mainCam;
 
         public Inventory invent;
         #endregion
@@ -24,7 +26,9 @@ namespace TheWarehouse
         // Use this for initialization
         void Start()
         {
-            charH = GetComponent<Handler>();
+            //charH = GetComponent<Handler>();
+            player = GameObject.FindGameObjectWithTag("Player");
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera");
             invent = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
         }
         #endregion
@@ -38,6 +42,8 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
+                player.GetComponent<FinalCharacter>().enabled = true;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
                 return false;
             }
             else
@@ -47,6 +53,8 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
+                player.GetComponent<FinalCharacter>().enabled = false;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
                 return true;
             }
         }

@@ -24,6 +24,7 @@ namespace TheWarehouse
             Cursor.visible = false;
             #endregion
             player = GameObject.FindGameObjectWithTag("Player");
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera");
 
 
         }
@@ -53,14 +54,73 @@ namespace TheWarehouse
                             //tDlg.showDlg = false;
                             player.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
                             player.GetComponent<FinalCharacter>().enabled = false;
-
+                            mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
                             Cursor.lockState = CursorLockMode.None;
                             Cursor.visible = true;
                         }
                         #endregion
                     }
-                }
+                    #region Item
+                    if (hitInfo.collider.CompareTag("Item"))
+                    {
+                        //Debug
+                        Debug.Log("Hit Item");
+                        ItemHandler handler = hitInfo.transform.GetComponent<ItemHandler>();
+                        if (handler != null)
+                        {
+                            handler.OnCollection();
+                        }
+                    }
+                    #endregion
+                    #region Shop
+                    if (hitInfo.collider.CompareTag("Shops"))
+                    {
+                        Debug.Log("Hit Shops");
+                        if (hitInfo.transform.GetComponent<Shop>() != null)
+                        {
+                            Shop shop = hitInfo.transform.GetComponent<Shop>();
+                            player.GetComponent<Inventory>().shop = shop;
 
+                            shop.showShop = true;
+                            player.GetComponent<Inventory>().showInv = true;
+                            player.GetComponent<Inventory>().inShop = true;
+                            
+                            Cursor.lockState = CursorLockMode.None;
+                            Cursor.visible = true;
+                            Debug.Log("Open Shops");
+                        }
+                    }
+                    #endregion
+                    #region Chest
+                    if (hitInfo.collider.CompareTag("Chest"))
+                    {
+                        Debug.Log("Hit Chest");
+                        if (hitInfo.transform.GetComponent<Chest>() != null)
+                        {
+                            Chest chest = hitInfo.transform.GetComponent<Chest>();
+                            player.GetComponent<Inventory>().chest = chest;
+                            chest.showChest = true;
+                            player.GetComponent<Inventory>().showInv = true;
+                            player.GetComponent<Inventory>().inChest = true;
+                            Cursor.lockState = CursorLockMode.None;
+                            Cursor.visible = true;
+                            Debug.Log("Open Chest");
+                        }
+                    }
+                    #endregion
+                    #region Door
+                    if (hitInfo.collider.CompareTag("Door"))
+                    {
+                        Debug.Log("Hit Door");
+                        if (hitInfo.transform.GetComponent<Doors>() != null)
+                        {
+                            Doors door = hitInfo.transform.GetComponent<Doors>();
+                            
+                            Debug.Log("Used Door");
+                        }
+                    }
+                    #endregion
+                }
             }
             #region InteractName
             Ray interactName;

@@ -23,6 +23,7 @@ namespace TheWarehouse
         [Space(3)]
         [Header("Player Stats")]
         #region Stats 
+        // Stat Index
         public int strength;
         public int intelligence;
         public int charisma;
@@ -42,7 +43,7 @@ namespace TheWarehouse
         public int weaponDamage;
         public int ammo, ammoUsed;
         public float coolDown; // WaitTime
-        public bool isAttack, isEquipped;
+        public bool isAttack, isEquipped; 
 
         #endregion
         [Space(3)]
@@ -81,7 +82,6 @@ namespace TheWarehouse
         public float miniY = -60f;
         public float maxiY = 60f;
         float rotatY = 0;
-
         #endregion
         [Space(3)]
         [Header("Animations")]
@@ -155,9 +155,9 @@ namespace TheWarehouse
         {
             Movement();
             //MouseLookie();
-            //CheckPoint();
+            CheckPoint();
             ExpHandler();
-            InteractHandler();
+            //InteractHandler();
         }
         #endregion
         #region LateUpdate
@@ -246,7 +246,7 @@ namespace TheWarehouse
         }
         #endregion
         #region CheckPoint
-        /*void CheckPoint()
+        void CheckPoint()
         {
             #region Update
             if (curHealth == 0)
@@ -256,7 +256,7 @@ namespace TheWarehouse
 
             }
             #endregion
-        }*/
+        }
         #endregion
         #region OnTriggerEnter
         void OnTriggerEnter(Collider other)
@@ -286,21 +286,21 @@ namespace TheWarehouse
             float sW = Screen.width / 16;
             float sH = Screen.height / 9;
             #region HEALTH
-            GUI.Box(new Rect(2 * sW, 0.25f * sH, 4 * sW, 0.25f * sH), "");
-            GUI.Box(new Rect(2 * sW, 0.25f * sH, curHealth * (4 * sW) / maxHealth, 0.25f * sH), "", healthColor);
+            GUI.Box(new Rect(.5f * sW, 0.25f * sH, 4 * sW, 0.25f * sH), "");
+            GUI.Box(new Rect(.5f * sW, 0.25f * sH, curHealth * (4 * sW) / maxHealth, 0.25f * sH), "", healthColor);
 
             #endregion
             #region MANA
-            GUI.Box(new Rect(2 * sW, 0.55f * sH, 4 * sW, 0.25f * sH), "");
-            GUI.Box(new Rect(2 * sW, 0.55f * sH, curMana * (4 * sW) / maxMana, 0.25f * sH), "", manaColor);
+            GUI.Box(new Rect(.5f * sW, 0.55f * sH, 4 * sW, 0.25f * sH), "");
+            GUI.Box(new Rect(.5f * sW, 0.55f * sH, curMana * (4 * sW) / maxMana, 0.25f * sH), "", manaColor);
             #endregion
             #region STAMINA
-            GUI.Box(new Rect(2 * sW, 0.85f * sH, 4 * sW, 0.25f * sH), "");
-            GUI.Box(new Rect(2 * sW, 0.85f * sH, curStamina * (4 * sW) / maxStamina, 0.25f * sH), "", staminaColor);
+            GUI.Box(new Rect(.5f * sW, 0.85f * sH, 4 * sW, 0.25f * sH), "");
+            GUI.Box(new Rect(.5f * sW, 0.85f * sH, curStamina * (4 * sW) / maxStamina, 0.25f * sH), "", staminaColor);
             #endregion
             #region EXP
-            GUI.Box(new Rect(2 * sW, 1.15f * sH, 4 * sW, 0.25f * sH), "");
-            GUI.Box(new Rect(2 * sW, 1.15f * sH, curExp * (4 * sW) / maxExp, 0.25f * sH), "", expColor);
+            GUI.Box(new Rect(.5f * sW, 1.15f * sH, 4 * sW, 0.25f * sH), "");
+            GUI.Box(new Rect(.5f * sW, 1.15f * sH, curExp * (4 * sW) / maxExp, 0.25f * sH), "", expColor);
             #endregion
             #region MINIMAP
             GUI.Box(new Rect(0.02f * sW, 6.35f * sH, 4.17f * sW, 2.7f * sH), "");
@@ -365,7 +365,7 @@ namespace TheWarehouse
         }*/
         #endregion
         #region Interact
-        void InteractHandler()
+        /*void InteractHandler()
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
@@ -383,16 +383,16 @@ namespace TheWarehouse
 
                     }
                     #endregion
-                    /* #region Item
+                    #region Item
                      if (hitInf.collider.CompareTag("Item"))
                      {
                          Debug.Log("Hit Item");
                      }
-                     #endregion*/
+                     #endregion
                 }
             }
 
-        }
+        }*/
         #endregion
     }
 }

@@ -57,6 +57,7 @@ namespace TheWarehouse
                     rotationY = Mathf.Clamp(rotationY, miniY, maxiY);
                     transform.localEulerAngles = new Vector3(-rotationY, transform.localEulerAngles.y, 0);
                 }
+                
             }
             #endregion
         }

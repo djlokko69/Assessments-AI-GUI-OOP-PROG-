@@ -21,7 +21,10 @@ namespace TheWarehouse
         public int reale;
 
         public string sortType;
-        public Handler charH;
+        //public Handler charH;
+        //public CharacterController charCo;
+        public GameObject player;
+        public GameObject mainCam;
 
         public Inventory invent;
         #endregion
@@ -31,8 +34,11 @@ namespace TheWarehouse
         {
             inv.Add(ItemData.CreateItem(0));
             inv.Add(ItemData.CreateItem(1));
-            charH = GetComponent<Handler>();
+            //charH = GetComponent<Handler>();
 
+            //charCo = this.GetComponent<CharacterController>();
+            player = GameObject.FindGameObjectWithTag("Player");
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera");
             invent = GameObject.FindGameObjectWithTag("Player").GetComponent<Inventory>();
         }
         #endregion
@@ -53,6 +59,9 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
+                player.GetComponent<FinalCharacter>().enabled = true;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
+
                 return false;
             }
             else
@@ -62,6 +71,8 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
+                player.GetComponent<FinalCharacter>().enabled = false;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
                 return true;
             }
         }
@@ -71,35 +82,40 @@ namespace TheWarehouse
         {
             sW = Screen.width / 16;
             sH = Screen.height / 9;
-
-            GUI.Box(new Rect(6 * sW, 2 * sH, 6 * sW, 6 * sH), "Shop");
-
-            if (GUI.Button(new Rect(8f * sW, 2.3f * sH, 1 * sW, 0.25f * sH), "All")) { sortType = "All"; }
-            if (GUI.Button(new Rect(9f * sW, 2.3f * sH, 1 * sW, 0.25f * sH), "Food")) { sortType = "Food"; }
-            if (GUI.Button(new Rect(14 * sW, 6 * sH, sW, 0.25f * sH), "Exit Shop"))
+            if(showShop)
             {
-                showShop = false;
-                invent.showInv = false;
-            }
-            DisplayShop(sortType);
-            if (selectItem != null)
-            {
-                GUI.DrawTexture(new Rect(13.5f * sW, 0.15f * sH, 1 * sW, 1 * sH), selectItem.Icon);
-                GUI.Box(new Rect(13.5f * sW, 1.17f * sH, 1 * sW, 1 * sH), selectItem.Amount.ToString());
-                GUI.Box(new Rect(13.5f * sW, 2.17f * sH, 2 * sW, 2 * sH), selectItem.Description.ToString());
+                GUI.Box(new Rect(6 * sW, 2 * sH, 6 * sW, 6 * sH), "Shop");
 
-                if(GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Buy"))
+                if (GUI.Button(new Rect(8f * sW, 2.3f * sH, 1 * sW, 0.25f * sH), "All")) { sortType = "All"; }
+                if (GUI.Button(new Rect(9f * sW, 2.3f * sH, 1 * sW, 0.25f * sH), "Food")) { sortType = "Food"; }
+                if (GUI.Button(new Rect(14 * sW, 6 * sH, sW, 0.25f * sH), "Exit Shop"))
                 {
-                    Debug.Log("Buy Item");
-                    if (invent.reale >= selectItem.Value)
+                    showShop = false;
+                    invent.showInv = false;
+                }
+
+                DisplayShop(sortType);
+
+                if (selectItem != null)
+                {
+                    GUI.DrawTexture(new Rect(13.5f * sW, 0.15f * sH, 1 * sW, 1 * sH), selectItem.Icon);
+                    GUI.Box(new Rect(13.5f * sW, 1.17f * sH, 1 * sW, 1 * sH), selectItem.Amount.ToString());
+                    GUI.Box(new Rect(13.5f * sW, 2.17f * sH, 2 * sW, 2 * sH), selectItem.Description.ToString());
+
+                    if (GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Buy"))
                     {
-                        invent.reale -= selectItem.Value;
-                        invent.inv.Add(selectItem);
-                        selectItem = null;
-                        return;
+                        Debug.Log("Buy Item");
+                        if (invent.reale >= selectItem.Value)
+                        {
+                            invent.reale -= selectItem.Value;
+                            invent.inv.Add(selectItem);
+                            selectItem = null;
+                            return;
+                        }
                     }
                 }
             }
+            
         }
         #endregion
         #region Display

@@ -16,7 +16,10 @@ namespace TheWarehouse
 
         public int reale;
         public string sortType;
-        public Handler charH;
+        //public Handler charH;
+        public GameObject player;
+        public GameObject mainCam;
+        //public CharacterController charCo;
         public Shop shop;
         public Chest chest;
         #endregion
@@ -30,7 +33,10 @@ namespace TheWarehouse
             inv.Add(ItemData.CreateItem(102));
             inv.Add(ItemData.CreateItem(201));
             inv.Add(ItemData.CreateItem(302));
-            charH = GetComponent<Handler>();
+            //charH = GetComponent<Handler>();
+            //charCo = this.GetComponent<CharacterController>();
+            player = GameObject.FindGameObjectWithTag("Player");
+            mainCam = GameObject.FindGameObjectWithTag("MainCamera");
         }
         #endregion
         #region Update
@@ -53,7 +59,8 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
-
+                player.GetComponent<FinalCharacter>().enabled = true;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = true;
                 return false;
             }
             else
@@ -63,6 +70,8 @@ namespace TheWarehouse
                 Cursor.lockState = CursorLockMode.None;
                 Cursor.visible = true;
                 GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
+                player.GetComponent<FinalCharacter>().enabled = false;
+                mainCam.GetComponent<Player.Camera.FirstPerson.MouseLook>().enabled = false;
                 return true;
             }
 
@@ -77,99 +86,95 @@ namespace TheWarehouse
                 sH = Screen.height / 9;
 
                 GUI.Box(new Rect(0, 0, Screen.width, Screen.height), "Inventory");
-                /*for (int i = 0; i < inv.Count; i++)
-                {
-                   if (GUI.Button(new Rect(0.5f*sW,0.25f*sH+i*(0.25f*sH),3*sW,0.25f*sH),inv[i].Name))
-                    {
-                        selectedItem = inv[i];
-                        Debug.Log(selectedItem.Name);
-                   }
-                }*/
+
                 if (GUI.Button(new Rect(5.5f * sW, 0.25f * sH, 1 * sW, 0.25f * sH), "All"))
                 {
                     sortType = "All";
                 }
                 if (GUI.Button(new Rect(6.5f * sW, 0.25f * sH, 1 * sW, 0.25f * sH), "Food")) { sortType = "Food"; }
+
                 DisplayInv(sortType);
 
-            }
-            if (selectedItem != null)
-            {
 
-                GUI.DrawTexture(new Rect(11 * sW, 1.5f * sH, 2 * sW, 2 * sH), selectedItem.Icon);
-                GUI.Box(new Rect(11 * sW, 3.5f * sH, 2 * sW, 2 * sH), selectedItem.Amount.ToString());
-                GUI.Box(new Rect(11 * sW, 5.5f * sH, 2 * sW, 2 * sH), selectedItem.Description.ToString());
-
-                #region Not Shop or Chest
-                if (!(inShop || inChest))
+                if (selectedItem != null)
                 {
-                    if (selectedItem.Type == ItemType.Food)
+
+                    GUI.DrawTexture(new Rect(11 * sW, 1.5f * sH, 2 * sW, 2 * sH), selectedItem.Icon);
+                    GUI.Box(new Rect(11 * sW, 3.5f * sH, 2 * sW, 2 * sH), selectedItem.Amount.ToString());
+                    GUI.Box(new Rect(11 * sW, 5.5f * sH, 2 * sW, 2 * sH), selectedItem.Description.ToString());
+
+                    #region Not Shop or Chest
+                    if (!(inShop || inChest))
                     {
-                        if (GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Eat"))
+                        if (selectedItem.Type == ItemType.Food)
                         {
-                            Debug.Log("OMG Yum, I like what I just ate.. what is it" + selectedItem.Name + "good to know");
+                            if (GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Eat"))
+                            {
+                                Debug.Log("OMG Yum, I like what I just ate.. what is it" + selectedItem.Name + "good to know");
+                                if (selectedItem.Amount > 1)
+                                {
+                                    selectedItem.Amount--;
+                                }
+                                else
+                                {
+                                    inv.Remove(selectedItem);
+                                    selectedItem = null;
+                                }
+                            }
+                        }
+                        else if (selectedItem.Type == ItemType.Weapon)
+                        {
+                            if (GUI.Button(new Rect(15 * sW, 8.75f * sH, sW, 0.25f * sH), "Equip"))
+                            {
+                                Debug.Log("You equip the " + selectedItem.Name);
+                            }
+                        }
+                    }
+
+                    #endregion
+                    #region Shop
+                    if (inShop)
+                    {
+                        if (GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Sell"))
+                        {
+                            Debug.Log("Selling");
                             if (selectedItem.Amount > 1)
                             {
                                 selectedItem.Amount--;
+                                reale += selectedItem.Value;
+                                shop.inv.Add(selectedItem);
                             }
                             else
                             {
                                 inv.Remove(selectedItem);
+                                reale += selectedItem.Value;
+                                shop.inv.Add(selectedItem);
                                 selectedItem = null;
                             }
                         }
                     }
-                    else if (selectedItem.Type == ItemType.Weapon)
+                    #endregion
+                    #region Chest
+                    if (inChest && !inShop)
                     {
-                        if (GUI.Button(new Rect(15 * sW, 8.75f * sH, sW, 0.25f * sH), "Equip"))
+                        if (GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Store"))
                         {
-                            Debug.Log("You equip the " + selectedItem.Name);
+                            Debug.Log("Storing");
+                            if (selectedItem.Amount > 1)
+                            {
+                                selectedItem.Amount--;
+                                chest.inv.Add(selectedItem);
+                            }
+                            else
+                            {
+                                inv.Remove(selectedItem);
+                                chest.inv.Add(selectedItem);
+                                selectedItem = null;
+                            }
                         }
                     }
+                    #endregion
                 }
-#endregion
-                #region Shop
-                if (inShop)
-                {
-                    if(GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Sell"))
-                    {
-                        Debug.Log("Selling");
-                        if (selectedItem.Amount > 1)
-                        {
-                            selectedItem.Amount--;
-                            reale += selectedItem.Value;
-                            shop.inv.Add(selectedItem);
-                        }
-                        else
-                        {
-                            inv.Remove(selectedItem);
-                            reale += selectedItem.Value;
-                            shop.inv.Add(selectedItem);
-                            selectedItem = null;
-                        }
-                    }
-                }
-                #endregion
-                #region Chest
-                if (inChest&&!inShop)
-                {
-                    if(GUI.Button(new Rect(13 * sW, 6f * sH, sW, 0.25f * sH), "Store"))
-                    {
-                        Debug.Log("Storing");
-                        if (selectedItem.Amount > 1)
-                        {
-                            selectedItem.Amount--;
-                            chest.inv.Add(selectedItem);
-                        }
-                        else
-                        {
-                            inv.Remove(selectedItem);
-                            chest.inv.Add(selectedItem);
-                            selectedItem = null;
-                        }
-                    }
-                }
-                #endregion
             }
         }
         #endregion
@@ -187,7 +192,7 @@ namespace TheWarehouse
                         if (h <= 35)
                         {
                             // 35 or less show buttons
-                            if (GUI.Button(new Rect(0.5f * sW, 0.25f * sH + h * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
+                            if (GUI.Button(new Rect(0.5f * sW, 2f * sH + h * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
                             {
                                 selectedItem = inv[i];
                             }
@@ -197,7 +202,7 @@ namespace TheWarehouse
                     else
                     {
                         // more than 35 show buttons in scroll view
-                        scrollPos = GUI.BeginScrollView(new Rect(0, 0.25f * sH, 5 * sW, 8.75f * sH), scrollPos, new Rect(0, 0, 0, 8.75f * sH + ((inv.Count - 35) * 0.25f * sH)), false, true);
+                        scrollPos = GUI.BeginScrollView(new Rect(0, 2f * sH, 5 * sW, 8.75f * sH), scrollPos, new Rect(0, 0, 0, 8.75f * sH + ((inv.Count - 35) * 0.25f * sH)), false, true);
                         if (inv[i].Type == type)
                         {
                             if (GUI.Button(new Rect(0.5f * sW, 0f * sH + h * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
@@ -220,7 +225,7 @@ namespace TheWarehouse
                     if (inv.Count <= 35)
                     {
                         // 35 or less show buttons
-                        if (GUI.Button(new Rect(0.5f * sW, 0.25f * sH + i * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
+                        if (GUI.Button(new Rect(0.5f * sW, 2f * sH + i * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
                         {
                             selectedItem = inv[i];
                             Debug.Log(selectedItem.Name);
@@ -229,7 +234,7 @@ namespace TheWarehouse
                     else
                     {
                         // more than 35 show buttons in scroll view
-                        scrollPos = GUI.BeginScrollView(new Rect(0, 0.25f * sH, 5 * sW, 8.75f * sH), scrollPos, new Rect(0, 0, 0, 8.75f * sH + ((inv.Count - 35) * 0.25f * sH)), false, true);
+                        scrollPos = GUI.BeginScrollView(new Rect(0, 2f * sH, 5 * sW, 8.75f * sH), scrollPos, new Rect(0, 0, 0, 8.75f * sH + ((inv.Count - 35) * 0.25f * sH)), false, true);
                         if (GUI.Button(new Rect(0.5f * sW, 0f * sH + i * (0.25f * sH), 3 * sW, 0.25f * sH), inv[i].Name))
                         {
                             selectedItem = inv[i];

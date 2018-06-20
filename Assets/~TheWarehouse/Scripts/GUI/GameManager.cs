@@ -82,7 +82,7 @@ namespace TheWarehouse
         // Update is called once per frame
         void Update()
         {
-            if (nowScene.name == "Level_01")
+            if (nowScene.name == "")
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
@@ -324,6 +324,9 @@ namespace TheWarehouse
             PlayerPrefs.SetString("Left", left.ToString());
             PlayerPrefs.SetString("Right", right.ToString());
             PlayerPrefs.SetString("Jump", jump.ToString());
+            
+
+            PlayerPrefs.SetFloat("Music", volumeSlider.value);
 
         }
         public void TogglePauseMenu()
